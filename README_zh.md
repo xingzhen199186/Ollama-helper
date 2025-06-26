@@ -59,9 +59,13 @@ Ollama 是一个优秀的大语言模型运行工具，但通过命令行 `creat
 
     - **对于 Windows 用户**: 您也可以直接双击项目中的 `run.bat` 文件来快速启动程序。
 
-## 方法二：
+## 方法二：下载已封装的程序
 
-选择已封装的 Ollama-helper.exe，非常轻量化，不需要下载其他任何文件。
+如果您不熟悉 Python 或不想配置环境，可以直接下载已打包好的 `exe` 程序。
+
+- **[点击此处下载 Ollama-helper.exe](https://github.com/xingzhen199186/Ollama-helper/releases/download/untagged-d4fe45fee0f90a6bcc23/Ollama-helper.exe)**
+
+下载后直接双击运行，非常轻量化，不需要下载或安装其他任何文件。
 
 ## 功能详解
 
