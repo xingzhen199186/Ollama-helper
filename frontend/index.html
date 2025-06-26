@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Ollama 模型助手</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <div class="tabs">
+            <button :class="{ active: activeTab === 'load' }" @click="activeTab = 'load'">模型加载</button>
+            <button :class="{ active: activeTab === 'manage' }" @click="activeTab = 'manage'">模型管理</button>
+            <button :class="{ active: activeTab === 'templates' }" @click="activeTab = 'templates'">模板管理</button>
+        </div>
+
+        <div v-if="activeTab === 'load'">
+            <div class="card">
+                <div class="form-group">
+                    <label><span class="step-badge">1</span>加载GGUF模型文件</label>
+                    <div class="file-input-area" @click="browseFile" @dragover.prevent @drop.prevent="handleFileDrop">
+                        <svg class="upload-icon" v-if="!ggufPath" width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 16.5V3M12 3L16.5 7.5M12 3L7.5 7.5M21 12.5V19.2C21 19.9201 20.7155 20.6094 20.2023 21.1226C19.6891 21.6358 18.9998 21.9203 18.2796 21.9203H5.72036C4.99943 21.9202 4.30932 21.6353 3.79612 21.1221C3.28292 20.6089 3 19.9193 3 19.2V12.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        <p v-if="!ggufPath">点击选择 GGUF 文件</p>
+                        <p v-else>已选择: <span class="file-path">{{ ggufPath }}</span></p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="modelName"><span class="step-badge">2</span>为模型命名</label>
+                    <input type="text" id="modelName" v-model="modelName" placeholder="例如: llama3-8b-custom (此名称仅供参考，将根据文件名自动规范)">
+                </div>
+                <div class="form-group">
+                    <label for="templateSelect"><span class="step-badge">3</span>选择 Modelfile 模板</label>
+                    <select id="templateSelect" v-model="selectedTemplateKey">
+                        <option v-for="(template, key) in availableTemplates" :value="key">{{ template.name }}</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label><span class="step-badge">4</span>Modelfile 实时预览</label>
+                    <div class="preview-container">{{ modelfileContent }}</div>
+                </div>
+                 <div class="form-group">
+                    <label>加载日志</label>
+                    <textarea class="log-container" ref="logContainer" :value="logs" readonly></textarea>
+                </div>
+
+                <div v-if="creationStatus === 'success'" class="success-message">
+                    ✅ 成功! 模型 <strong>'{{ finalModelName }}'</strong> 已成功加载。
+                </div>
+                <div v-if="creationStatus === 'error'" class="error-message">
+                    ❌ 失败! 模型创建遇到问题，请检查上方日志获取详细信息。
+                </div>
+
+                <button @click="startCreateModel" :disabled="isLoading || !ggufPath" style="margin-top: 20px;">
+                    {{ isLoading ? '创建中...' : '开始创建模型' }}
+                </button>
+            </div>
+        </div>
+
+        <div v-if="activeTab === 'manage'">
+            <div class="card">
+                 <div class="row" style="display: flex; gap: 10px; margin-bottom: 20px;">
+                    <button class="secondary" @click="refreshModels" :disabled="isLoading">刷新列表</button>
+                    <button class="danger" @click="deleteSelectedModels" :disabled="isLoading || selectedModelsCount === 0">
+                        删除选中 ({{ selectedModelsCount }})
+                    </button>
+                 </div>
+                 <div class="model-list">
+                     <table>
+                         <thead>
+                             <tr>
+                                 <th><input type="checkbox" @change="toggleSelectAll" :checked="allSelected"></th>
+                                 <th>名称 (NAME)</th>
+                                 <th>ID</th>
+                                 <th>大小 (SIZE)</th>
+                                 <th>修改时间 (MODIFIED)</th>
+                             </tr>
+                         </thead>
+                         <tbody>
+                             <tr v-if="!models.data || models.data.length === 0">
+                                 <td colspan="5" style="text-align: center; padding: 25px; color: var(--text-secondary);">
+                                     <span v-if="isLoading">正在加载...</span>
+                                     <span v-else-if="models.error">{{ models.error }}</span>
+                                     <span v-else>Ollama 中暂无模型</span>
+                                 </td>
+                             </tr>
+                             <tr v-for="model in models.data" :key="model.id">
+                                 <td><input type="checkbox" v-model="model.selected"></td>
+                                 <td>{{ model.name }}</td>
+                                 <td>{{ model.id }}</td>
+                                 <td>{{ model.size }}</td>
+                                 <td>{{ model.modified }}</td>
+                             </tr>
+                         </tbody>
+                     </table>
+                 </div>
+                 <div class="form-group" style="margin-top: 25px; margin-bottom: 0;">
+                    <label>Ollama 运行状态</label>
+                    <div class="log-container" style="height: auto; min-height: 60px;">{{ psInfo }}</div>
+                </div>
+            </div>
+        </div>
+
+        <div v-if="activeTab === 'templates'">
+            <div class="card">
+                <h3>添加/编辑自定义模板</h3>
+                <div class="form-group">
+                    <label for="newTemplateName">模板名称</label>
+                    <input type="text" id="newTemplateName" v-model="newTemplateName" placeholder="为您的模板起一个独特的名字">
+                </div>
+                <div class="form-group">
+                    <label for="newTemplateKeywords">识别关键词 (用逗号分隔)</label>
+                    <input type="text" id="newTemplateKeywords" v-model="newTemplateKeywords" placeholder="例如: my-model, awesome-model, test-v1">
+                </div>
+                <div class="form-group">
+                    <label for="newTemplateContent">模板内容</label>
+                    <textarea id="newTemplateContent" v-model="newTemplateContent" placeholder="在此处粘贴 Modelfile 参数，例如：TEMPLATE ..."></textarea>
+                </div>
+                <button @click="saveCustomTemplate" :disabled="!newTemplateName || !newTemplateContent">保存模板</button>
+            </div>
+
+            <div class="card">
+                <h3>已保存的模板</h3>
+                <div class="template-list">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>模板名称</th>
+                                <th>关键词</th>
+                                <th>内容预览</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-if="Object.keys(customTemplates).length === 0">
+                                <td colspan="4" style="text-align: center; padding: 25px; color: var(--text-secondary);">没有自定义模板</td>
+                            </tr>
+                            <tr v-for="(template, key) in customTemplates" :key="key">
+                                <td>{{ template.name }}</td>
+                                <td>
+                                    <span class="keywords" v-if="template.keywords && template.keywords.length" v-for="kw in template.keywords" :key="kw">{{ kw }}</span>
+                                </td>
+                                <td><span class="template-content">{{ template.template }}</span></td>
+                                <td><button class="danger" @click="deleteCustomTemplate(key)">删除</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="./libs/vue.global.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

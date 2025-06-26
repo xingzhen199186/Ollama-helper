@@ -1,0 +1,409 @@
+:root {
+    /* 新色彩系统 */
+    --primary: #3B82F6;       /* 活力蓝 */
+    --primary-light: #93C5FD; /* 浅蓝 */
+    --secondary: #10B981;     /* 清新绿 */
+    --accent: #8B5CF6;        /* 优雅紫 */
+    --background: #F8FAFC;    /* 雪白背景 */
+    --surface: #FFFFFF;       /* 卡片背景 */
+    --text-primary: #1E293B;  /* 深灰文字 */
+    --text-secondary: #64748B;/* 中灰文字 */
+    --border: #E2E8F0;        /* 浅灰边框 */
+    --success: #10B981;       /* 成功绿 */
+    --warning: #F59E0B;       /* 警告黄 */
+    --error: #EF4444;         /* 错误红 */
+    
+    /* 新尺寸系统 */
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 14px;
+    --shadow-sm: 0 2px 6px rgba(0,0,0,0.05);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+    --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* --- 全局重置 --- */
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+                 Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    background-color: var(--background);
+    color: var(--text-primary);
+    font-size: 15px;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.6;
+}
+
+#app {
+    padding: 30px;
+    box-sizing: border-box;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+/* --- 卡片容器 --- */
+.card {
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    padding: 25px;
+    margin-bottom: 25px;
+    transition: var(--transition);
+    border: 1px solid var(--border);
+}
+
+.card:hover {
+    box-shadow: var(--shadow-md);
+}
+
+/* --- 标签页 --- */
+.tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 30px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 5px;
+}
+
+.tabs button {
+    padding: 12px 24px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+    position: relative;
+    transition: var(--transition);
+}
+
+.tabs button:hover {
+    color: var(--primary);
+}
+
+.tabs button.active {
+    color: var(--primary);
+    font-weight: 600;
+}
+
+.tabs button.active::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--primary);
+    border-radius: 3px;
+}
+
+/* --- 表单元素 --- */
+.form-group {
+    margin-bottom: 28px;
+}
+
+label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 10px;
+    color: var(--text-primary);
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.step-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: white;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+input[type="text"], 
+select, 
+textarea {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    box-sizing: border-box;
+    background-color: var(--surface);
+    font-size: 15px;
+    transition: var(--transition);
+    box-shadow: var(--shadow-sm);
+}
+
+input[type="text"]:focus, 
+select:focus, 
+textarea:focus {
+    outline: none;
+    border-color: var(--primary-light);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+textarea {
+    min-height: 140px;
+    font-family: 'SF Mono', 'Menlo', monospace;
+    line-height: 1.5;
+}
+
+/* --- 按钮 --- */
+button {
+    background: linear-gradient(to right, var(--primary), var(--accent));
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 500;
+    transition: var(--transition);
+    box-shadow: var(--shadow-sm);
+    position: relative;
+    overflow: hidden;
+}
+
+button::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: 0.5s;
+}
+
+button:hover::after {
+    left: 100%;
+}
+
+button:not(:disabled):hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(59, 130, 246, 0.2);
+}
+
+button.secondary {
+    background: var(--surface);
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+}
+
+button.secondary:not(:disabled):hover {
+    background: #F1F5F9;
+}
+
+button.danger {
+    background: linear-gradient(to right, #EF4444, #F97316);
+}
+
+button:disabled {
+    background: #CBD5E1;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* --- 文件上传区域 --- */
+.file-input-area {
+    border: 2px dashed var(--border);
+    border-radius: var(--radius-lg);
+    padding: 35px 25px;
+    text-align: center;
+    background-color: var(--surface);
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    position: relative;
+}
+
+.file-input-area:hover {
+    border-color: var(--primary-light);
+    background-color: #F8FAFF;
+}
+
+.file-input-area p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-weight: 500;
+    font-size: 16px;
+}
+
+.file-path {
+    font-size: 14px;
+    color: var(--primary);
+    word-break: break-all;
+    background-color: rgba(59, 130, 246, 0.08);
+    padding: 8px 15px;
+    border-radius: var(--radius-sm);
+    margin-top: 10px;
+    font-family: monospace;
+}
+
+.upload-icon {
+    color: var(--primary-light);
+    width: 48px;
+    height: 48px;
+}
+
+/* --- 日志与预览区域 --- */
+.log-container, 
+.preview-container {
+    background-color: #1E293B;
+    color: #E2E8F0;
+    font-family: 'SF Mono', 'Menlo', monospace;
+    padding: 18px;
+    border-radius: var(--radius-md);
+    height: 160px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    word-break: break-all;
+    font-size: 13px;
+    margin-top: 12px;
+    line-height: 1.5;
+    box-shadow: inset 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.preview-container {
+    background-color: #F1F5F9;
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+}
+
+/* --- 表格 --- */
+.model-list table, 
+.template-list table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background-color: var(--surface);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+}
+
+.model-list th, 
+.model-list td, 
+.template-list th, 
+.template-list td {
+    text-align: left;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+}
+
+.model-list th, 
+.template-list th {
+    background-color: #F1F5F9;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.model-list tr:last-child td, .template-list tr:last-child td {
+    border-bottom: none;
+}
+.model-list tbody tr:hover, 
+.template-list tbody tr:hover {
+    background-color: #F8FAFF;
+}
+
+.template-list td .template-content {
+    font-size: 13px;
+    color: var(--text-secondary);
+    max-width: 250px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.template-list td .keywords {
+    font-size: 12px;
+    color: var(--primary);
+    font-family: monospace;
+    background-color: rgba(59, 130, 246, 0.08);
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+    display: inline-block;
+    margin: 2px;
+}
+
+/* --- 其他元素 --- */
+hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 30px 0;
+}
+
+h3 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: var(--text-primary);
+    position: relative;
+    padding-bottom: 10px;
+}
+
+h3::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 50px;
+    height: 3px;
+    background: linear-gradient(to right, var(--primary), var(--accent));
+    border-radius: 3px;
+}
+
+/* --- 结果信息样式 (新增) --- */
+.success-message, .error-message {
+    padding: 15px;
+    border-radius: var(--radius-md);
+    margin-top: 20px;
+    font-weight: 500;
+    text-align: center;
+}
+.success-message {
+    background-color: #F0FDF4;
+    color: #16A34A;
+    border: 1px solid #BBF7D0;
+}
+.error-message {
+    background-color: #FEF2F2;
+    color: var(--error);
+    border: 1px solid #FECACA;
+}
+.success-message strong, .error-message strong {
+    font-weight: 700;
+}
+
+/* --- 让日志区的textarea看起来像div --- */
+.log-container, .preview-container {
+    /* ... 原有样式保持不变 ... */
+    
+    /* 新增和修改的样式 */
+    resize: vertical; /* 允许用户垂直调整大小，非常方便！ */
+    border: 1px solid #3b4b60; /* 给一个更匹配深色背景的边框 */
+}
+
+.log-container:focus, .preview-container:focus {
+    outline: none; /* 去掉聚焦时的蓝色轮廓 */
+    border-color: var(--primary-light);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3); /* 给一个柔和的发光效果 */
+}
