@@ -1,4 +1,5 @@
 # Ollama Helper
+[![阅读中文说明](https://img.shields.io/badge/Language-中文-blue.svg)](README_zh.md)
 
 A graphical management tool designed for Ollama users, aimed at simplifying the process of importing, testing, and managing non-official GGUF models.
 
