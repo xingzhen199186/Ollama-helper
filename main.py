@@ -203,7 +203,7 @@ if __name__ == '__main__':
             print(f"--- 正在进行第 {attempt + 1} 次启动尝试 ---", file=sys.stderr)
             # 每次尝试都创建一个新的窗口实例
             window = webview.create_window(
-                'Ollama 模型助手',
+                'Ollama-helper',
                 entry_point,
                 js_api=api,
                 width=950,
