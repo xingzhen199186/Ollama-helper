@@ -59,9 +59,13 @@ Ollama is an excellent tool for running large language models. However, creating
 
       - **For Windows Users**: You can also double-click the `run.bat` file in the project directory to quickly start the application.
 
-### Method 2:
+### Method 2: Download the Packaged Application
 
-Choose the packaged `Ollama-helper.exe`. It is very lightweight and does not require downloading any other files.
+If you are not familiar with Python or prefer not to set up the environment, you can download the packaged `.exe` application directly.
+
+- **[Click here to download Ollama-helper.exe](https://github.com/xingzhen199186/Ollama-helper/releases/download/untagged-d4fe45fee0f90a6bcc23/Ollama-helper.exe)**
+
+After downloading, simply double-click the file to run it. It is very lightweight and does not require any other files or installations.
 
 ## Feature Details
 
