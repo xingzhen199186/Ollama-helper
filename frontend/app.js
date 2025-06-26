@@ -1,5 +1,4 @@
-// app.js (v3.7 - 新增F12快捷键打开开发者工具)
-
+// app.js
 const { createApp, ref, computed, watch, nextTick } = Vue;
 
 createApp({
@@ -217,7 +216,6 @@ createApp({
             loadCustomTemplates();
         });
 
-        // <--- 本次新增的核心代码 --->
         document.addEventListener('keydown', (event) => {
             // 检查按下的键是不是 F12
             if (event.key === 'F12') {
